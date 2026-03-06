@@ -12,18 +12,6 @@ pipeline {
     }
 
     stages {
-        // 2. Получение исходного кода
-        stage('Checkout') {
-            steps {
-                // Для публичного репозитория можно просто git url
-                git url: 'git@github.com:jrdeath1337/jenkins_hw3.git', branch: 'main'
-                // Если репозиторий приватный, используйте credentials:
-                // git branch: 'main',
-                //     url: 'git@github.com:your-username/python-calculator.git',
-                //     credentialsId: 'github-credentials'
-            }
-        }
-
         // 3. Установка зависимостей
         stage('Install Dependencies') {
             steps {
