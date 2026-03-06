@@ -29,8 +29,8 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-                    flake8 . --count --exit-zero --max-complexity=10 --statistics
+                    flake8 . --exclude=venv,.git,__pycache__ --count --select=E9,F63,F7,F82 --show-source --statistics
+                    flake8 . --exclude=venv,.git,__pycache__ --count --exit-zero --max-complexity=10 --statistics
                 '''
             }
         }
