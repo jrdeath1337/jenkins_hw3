@@ -62,10 +62,12 @@ pipeline {
                     
                     // Публикация HTML-отчёта (потребуется плагин HTML Publisher)
                     publishHTML([
-                        reportDir: 'reports',
-                        reportFiles: 'test-report.html',
-                        reportName: 'Pytest HTML Report',
-                        keepAll: true
+                      reportDir: 'reports',
+                      reportFiles: 'test-report.html',
+                      reportName: 'Pytest HTML Report',
+                      keepAll: true,
+                      allowMissing: false,           // добавлено
+                      alwaysLinkToLastBuild: true    // добавлено
                     ])
                 }
             }
