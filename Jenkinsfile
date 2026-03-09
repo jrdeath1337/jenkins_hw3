@@ -79,14 +79,14 @@ pipeline {
             }
         }
 
-      post {
-        failure {
-            // Уведомление о неудаче (например, в Telegram или email)
-            echo "Pipeline failed. Check logs."
-        }
-        success {
-            echo "Pipeline completed successfully!"
-        }
+    post {
+      failure {
+          // Уведомление о неудаче (например, в Telegram или email)
+          echo "Pipeline failed. Check logs."
+          }
+      success {
+          echo "Pipeline completed successfully!"
+          }
     }
   }
 }
