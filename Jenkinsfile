@@ -80,13 +80,13 @@ pipeline {
         }
 
     post {
-      failure {
+        failure {
           // Уведомление о неудаче (например, в Telegram или email)
           echo "Pipeline failed. Check logs."
           }
-      success {
+        success {
           echo "Pipeline completed successfully!"
-          }
-    }
+      }
+    
   }
 }
