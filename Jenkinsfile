@@ -78,15 +78,15 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/*.tar.gz', fingerprint: true
             }
         }
+    } // закрытие stages
 
     post {
         failure {
-          // Уведомление о неудаче (например, в Telegram или email)
-          echo "Pipeline failed. Check logs."
-          }
+            // Уведомление о неудаче (например, в Telegram или email)
+            echo "Pipeline failed. Check logs."
+        }
         success {
-          echo "Pipeline completed successfully!"
-      }
-    
-  }
-}
+            echo "Pipeline completed successfully!"
+        }
+    } // закрытие post
+} // закрытие pipeline
