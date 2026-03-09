@@ -79,33 +79,7 @@ pipeline {
             }
         }
 
-        // 8. Дополнительная стадия: тестирование в Docker-контейнере (гибридное окружение)
-        stage('Test in Docker') {
-            agent {
-                docker {
-                    image 'python:3.9-slim'        // официальный образ Python
-                    label 'docker-host'             // метка агента с Docker (можно ту же 'build-agent', если на нём есть Docker)
-                    args '-v /tmp:/tmp'             // монтирование томов при необходимости
-                }
-            }
-            steps {
-                // Внутри контейнера клонируем код (или можно использовать workspace, но проще склонировать заново)
-                git url: 'https://github.com/your-username/python-calculator.git', branch: 'main'
-                sh '''
-                    pip install --no-cache-dir -r requirements.txt
-                    pytest --junitxml=reports/docker-junit.xml
-                '''
-            }
-            post {
-                always {
-                    // Публикуем отчёты из Docker-стадии (если нужно отдельно)
-                    junit 'reports/docker-junit.xml'
-                }
-            }
-        }
-    }
-
-    post {
+      post {
         failure {
             // Уведомление о неудаче (например, в Telegram или email)
             echo "Pipeline failed. Check logs."
