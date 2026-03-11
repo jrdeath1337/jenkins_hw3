@@ -2,58 +2,57 @@
 Этот проект демонстрирует настройку непрерывной интеграции и доставки (CI/CD) для простого Python-приложения (калькулятор) с использованием Jenkins. Pipeline автоматизирует установку зависимостей, линтинг, тестирование, сборку пакета и архивацию артефактов при каждом пуше в репозиторий.
 
 ## 📋Содержание
-Требования
+- Требования
 
-Структура репозитория
+- Структура репозитория
 
-Настройка Jenkins
+- Настройка Jenkins
 
-Подготовка агента
+- Подготовка агента
 
-Установка плагинов
+- Установка плагинов
 
-Настройка credentials
+- Настройка credentials
 
-Создание pipeline
+- Создание pipeline
 
-Описание pipeline
+- Описание pipeline
 
-Стадии сборки
+- Стадии сборки
 
-Отчётность
+- Отчётность
 
-Безопасность
+- Безопасность
 
-Запуск и результаты
+- Запуск и результаты
 
-Автор
+- Автор
 
 ## Требования
-Jenkins (основной сервер) версии 2.387 или выше
+- Jenkins (основной сервер) версии 2.387 или выше
 
-Агент Jenkins с меткой jenkins_python (может быть тот же сервер или отдельная машина)
+- Агент Jenkins с меткой jenkins_python (может быть тот же сервер или отдельная машина)
 
-На агенте должны быть установлены:
+- На агенте должны быть установлены:
 
-Python 3.6+
+- Python 3.6+
 
-pip
+- pip
 
-git
+- git
 
-Плагины Jenkins:
+## Плагины Jenkins
+- Pipeline
 
-Pipeline
+- Git
 
-Git
+- JUnit
 
-JUnit
+- HTML Publisher
 
-HTML Publisher
+- Credentials Binding
 
-Credentials Binding
-
-SSH Credentials (если используется SSH-подключение к агенту)
+- SSH Credentials (если используется SSH-подключение к агенту)
 
 ## Структура репозитория
 .
@@ -64,105 +63,111 @@ SSH Credentials (если используется SSH-подключение к
 ├── setup.py                 # Файл сборки пакета
 └── README.md                # Документация
 ## Настройка Jenkins
-Подготовка агента
+- Подготовка агента
 
-В Jenkins перейдите в Manage Jenkins → Manage Nodes and Clouds → New Node.
+- В Jenkins перейдите в Manage Jenkins → Manage Nodes and Clouds → New Node.
 
-Создайте узел с именем jenkins_python (или другим, но тогда измените метку в Jenkinsfile).
+- Создайте узел с именем jenkins_python (или другим, но тогда измените метку в Jenkinsfile).
 
-Укажите:
+# Укажите:
 
-Launch method: Launch agents via SSH (рекомендуется для безопасности) или Launch agent by connecting it to the master (JNLP).
+- Launch method: Launch agents via SSH (рекомендуется для безопасности) или Launch agent by connecting it to the master (JNLP).
 
-Host: IP-адрес или домен агента.
+- Host: IP-адрес или домен агента.
 
-Credentials: Добавьте SSH-ключ (тип SSH Username with private key) для подключения.
+- Credentials: Добавьте SSH-ключ (тип SSH Username with private key) для подключения.
 
-Availability: Keep this agent online as much as possible.
+- Availability: Keep this agent online as much as possible.
 
-Сохраните. Убедитесь, что агент онлайн.
+- Сохраните. Убедитесь, что агент онлайн.
 
 ## Установка плагинов
-Установите необходимые плагины через Manage Jenkins → Manage Plugins → Available:
+- Установите необходимые плагины через Manage Jenkins → Manage Plugins → Available:
 
-Pipeline
+- Pipeline
 
-Git
+- Git
 
-JUnit
+- JUnit
 
-HTML Publisher
+- HTML Publisher
 
-(по желанию) Docker Pipeline, если планируется использовать контейнеры.
+*(по желанию) Docker Pipeline, если планируется использовать контейнеры.*
 
 ## Настройка credentials
-Если репозиторий приватный, добавьте credentials для доступа к GitHub/GitLab:
+# Если репозиторий приватный, добавьте credentials для доступа к GitHub/GitLab:
 
-Manage Jenkins → Manage Credentials → (выберите область) → Add Credentials.
+- Manage Jenkins → Manage Credentials → (выберите область) → Add Credentials.
 
-Тип: SSH Username with private key (или Username with password).
+- Тип: SSH Username with private key (или Username with password).
 
-Укажите ID (например, github-ssh-key) и сам ключ.
+- Укажите ID (например, github-ssh-key) и сам ключ.
 
 ## Создание pipeline
-В Jenkins выберите New Item, введите имя (например, python-calculator), выберите Pipeline.
+- В Jenkins выберите New Item, введите имя (например, python-calculator), выберите Pipeline.
 
-В разделе Pipeline выберите:
+- В разделе Pipeline выберите:
 
-Definition: Pipeline script from SCM
+- Definition: Pipeline script from SCM
 
-SCM: Git
+- SCM: Git
 
-Repository URL: git@github.com:jrdeath1337/jenkins_hw3.git (или ваш URL)
+- Repository URL: git@github.com:jrdeath1337/jenkins_hw3.git (или ваш URL)
 
-Credentials: выберите ранее созданные (если репозиторий приватный)
+- Credentials: выберите ранее созданные (если репозиторий приватный)
 
-Branches to build: */main
+- Branches to build: */main
 
-Script Path: Jenkinsfile
+- Script Path: Jenkinsfile
 
-В разделе Build Triggers отметьте GitHub hook trigger for GITScm polling (если используется webhook).
+- В разделе Build Triggers отметьте GitHub hook trigger for GITScm polling *(если используется webhook)*.
 
-Сохраните.
+- Сохраните.
 
 ## Описание pipeline
-Стадии сборки
-Стадия	Действие
-Install Dependencies	Создаётся виртуальное окружение Python, обновляется pip, устанавливаются setuptools, wheel и зависимости из requirements.txt.
-Lint	Проверка стиля кода с помощью flake8. Исключаются каталоги venv, .git, __pycache__. Выводятся ошибки, но сборка не прерывается (используется --exit-zero).
-Test	Запуск тестов через pytest с генерацией JUnit XML и HTML-отчёта.
-Build Package	Сборка дистрибутива (tar.gz) с помощью python setup.py sdist.
-Archive	Сохранение собранного пакета как артефакт сборки в Jenkins.
-Отчётность
-JUnit: результаты тестов публикуются и отображаются в виде графиков и истории.
+- Стадии сборки
 
-HTML Publisher: создаётся отдельная вкладка с красивым HTML-отчётом о тестировании (генерируется pytest-html).
+- Стадия	Действие
+
+- Install Dependencies	Создаётся виртуальное окружение Python, обновляется pip, устанавливаются setuptools, wheel и зависимости из requirements.txt.
+
+- Lint	Проверка стиля кода с помощью flake8. Исключаются каталоги venv, .git, __pycache__. Выводятся ошибки, но сборка не прерывается (используется --exit-zero).
+
+- Test	Запуск тестов через pytest с генерацией JUnit XML и HTML-отчёта.
+
+- Build Package	Сборка дистрибутива (tar.gz) с помощью python setup.py sdist.
+
+- Archive	Сохранение собранного пакета как артефакт сборки в Jenkins.
+# Отчётность
+- JUnit: результаты тестов публикуются и отображаются в виде графиков и истории.
+
+- HTML Publisher: создаётся отдельная вкладка с красивым HTML-отчётом о тестировании *(генерируется pytest-html)*.
 
 ## Безопасность
-Агент подключается к мастеру по SSH с использованием ключа (настройка в Jenkins).
+- Агент подключается к мастеру по SSH с использованием ключа *(настройка в Jenkins)*.
 
-Пользователь, от которого запускается агент, имеет минимально необходимые права (не root).
+- Пользователь, от которого запускается агент, имеет минимально необходимые права **(не root)**.
 
-Доступ к репозиторию осуществляется через SSH-ключ, хранящийся в Jenkins Credentials.
+- Доступ к репозиторию осуществляется через SSH-ключ, хранящийся в Jenkins Credentials.
 
-Все секреты (ключи, пароли) не выводятся в лог сборки.
+- Все секреты **(ключи, пароли)** не выводятся в лог сборки.
 
 ## Запуск и результаты
-После настройки webhook или ручного запуска сборка стартует автоматически.
+- После настройки webhook или ручного запуска сборка стартует автоматически.
 
-На странице сборки можно наблюдать выполнение стадий в реальном времени.
+- На странице сборки можно наблюдать выполнение стадий в реальном времени.
 
-По окончании:
+# По окончании:
 
-В разделе Test Result доступен JUnit-отчёт.
+- В разделе Test Result доступен JUnit-отчёт.
 
-Вкладка Pytest HTML Report содержит HTML-отчёт.
+- Вкладка Pytest HTML Report содержит HTML-отчёт.
 
-В Workspace или Артефакты можно найти собранный пакет (dist/*.tar.gz).
+- В Workspace или Артефакты можно найти собранный пакет (dist/*.tar.gz).
 
-При ошибке сборки в логах будет сообщение, а в Console Output – детали.
+- При ошибке сборки в логах будет сообщение, а в Console Output – детали.
 
 ## Автор
-Dmitriy Petrovich 
-mail: jedeath1337@gmail.com
-Репозиторий: github.com/jrdeath1337/jenkins_hw3
+- Dmitriy Petrovich 
+- mail: jedeath1337@gmail.com
+- Репозиторий: github.com/jrdeath1337/jenkins_hw3
