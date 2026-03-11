@@ -55,13 +55,13 @@
 - SSH Credentials (если используется SSH-подключение к агенту)
 
 ## Структура репозитория
-.
-├── Jenkinsfile              # Declarative Pipeline
-├── calculator.py            # Основной модуль калькулятора
-├── test_calculator.py       # Модуль с тестами (pytest)
-├── requirements.txt         # Зависимости Python
-├── setup.py                 # Файл сборки пакета
-└── README.md                # Документация
+- # .
+- ├── Jenkinsfile              # Declarative Pipeline
+- ├── calculator.py            # Основной модуль калькулятора
+- ├── test_calculator.py       # Модуль с тестами (pytest)
+- ├── requirements.txt         # Зависимости Python
+- ├── setup.py                 # Файл сборки пакета
+- └── README.md                # Документация
 ## Настройка Jenkins
 - Подготовка агента
 
@@ -95,7 +95,7 @@
 *(по желанию) Docker Pipeline, если планируется использовать контейнеры.*
 
 ## Настройка credentials
-# Если репозиторий приватный, добавьте credentials для доступа к GitHub/GitLab:
+### Если репозиторий приватный, добавьте credentials для доступа к GitHub/GitLab:
 
 - Manage Jenkins → Manage Credentials → (выберите область) → Add Credentials.
 
